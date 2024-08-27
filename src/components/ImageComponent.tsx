@@ -28,11 +28,19 @@ const base64ToImage = (base64, mime_type) =>{
 export const ImageComponent = () => {
     const [base64Images,setBase64Images]=useState<string[]>([])
     const inputRef = useRef<HTMLInputElement>(null);
+    let input_style :string ='is-visible'
 
     useEffect(()=>{
         console.log("useEffectが呼ばれました")
         resetInput()
     },[])
+
+    // 送信ボタンを押した時に発火する関数
+    const handleSubmit =() => {
+        
+        console.log("画像を送信しました！")
+        resetInput()
+    }
 
     // 画像、inputタグをリセットする関数
     const resetInput = () => {
@@ -41,23 +49,22 @@ export const ImageComponent = () => {
             inputRef.current.value=''
         }
         setBase64Images([])
+        input_style='is-visible'
     }
 
-    // 送信ボタンを押した時に発火する関数
-    const handleSubmit =() => {
-        console.log("画像を送信しました！")
-        resetInput()
-    }
-
+    // ブラウザバック時にinputタグをリセットする
     window.addEventListener('unload',resetInput)
-
-
-
+    
     // ファイルが新たに選択された時に発火する関数 
     const handleInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log("handleInputFileが呼ばれました！")
         const files=e.target.files;
-        console.log(files)
+        input_style='is-hidden'
+
+        if (base64Images.length==1){
+            window.alert("選択できるが画像は1枚までです")
+            return
+        }
 
         if(!files){
             // ファイルが選択されていない場合は何もしない
@@ -88,16 +95,19 @@ export const ImageComponent = () => {
 
     return (
         <form className="container1">
-            <input type="file" multiple accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
             {/* プレビュー部分 */}
             <div className="prev-img-container">
-            {base64Images.length !== 0 && base64Images.map((image, idx) => (
+                {base64Images.length !== 0 && base64Images.map((image, idx) => (
                 <div key={idx} className="prev-img-box">
                     <img src={image} className="prev-img"/>
                 </div>
             ))}
             </div>
-            <button type='submit' onClick={handleSubmit}>送信</button>
+            <div>
+            <input type="file" multiple accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
+                <button type='submit' onClick={handleSubmit}>送信</button>
+            </div>
+            
         </form>
     
     ) 
