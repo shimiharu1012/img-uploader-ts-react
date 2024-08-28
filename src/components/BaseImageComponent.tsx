@@ -1,5 +1,34 @@
 import React, { useRef, useState,useEffect } from "react";
 
+/*
+
+
+// img要素をbase64にエンコードする
+const ImageToBase64 = (img :HTMLImageElement, mime_type :string) => {
+    // New Canvas
+    let canvas :HTMLCanvasElement = document.createElement('canvas');
+    canvas.width  = img.width;
+    canvas.height = img.height;
+    // Draw Image
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    // To Base64
+    return canvas.toDataURL(mime_type);
+}
+*/
+
+
+// base64を画像にデコードする
+function Base64ToImage(base64img :string, callback :Function) {
+    var img = new Image();
+    img.onload = function() {
+        callback(img);
+    };
+    img.src = base64img;
+}
+
+
+
 
 // 関数コンポーネント
 export const ImageComponent = () => {
@@ -60,8 +89,16 @@ export const ImageComponent = () => {
                 if (typeof(result)!=='string'){
                     return;
                 }
-                console.log(typeof(result))
-                console.log(result)
+                Base64ToImage(result,function(img :HTMLImageElement){
+                    // <img>要素にすることで幅・高さがわかります
+                    alert("w=" + img.width + " h=" + img.height);
+                    // <img>要素としてDOMに追加
+                    const mainElement = document.getElementsByClassName('encoded-img')[0];
+                    console.log(mainElement)
+                    if (mainElement) {
+                        mainElement.appendChild(img);
+                    }
+                })
                 setBase64Images((prevImages)=>[...prevImages,result]);
             }
 
@@ -83,10 +120,11 @@ export const ImageComponent = () => {
             ))}
             </div>
             <div>
-            <input type="file" accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
+            <input type="file" multiple accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
                 <button type='submit' onClick={handleSubmit}>送信</button>
             </div>
-            
+            <div className="encoded-img">
+            </div>
         </form>
     
     ) 
