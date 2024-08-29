@@ -14,7 +14,6 @@ export const ImageComponent = () => {
 
     // 送信ボタンを押した時に発火する関数
     const handleSubmit =() => {
-        
         console.log("画像を送信しました！")
         resetInput()
     }
@@ -83,7 +82,7 @@ export const ImageComponent = () => {
             ))}
             </div>
             <div>
-            <input type="file" accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
+                <input type="file" accept="image/jpeg, image/png" onChange={handleInputFile} ref={inputRef}/>
                 <button type='submit' onClick={handleSubmit}>送信</button>
             </div>
             
